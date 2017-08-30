@@ -2,6 +2,7 @@ import React from 'react'
 import * as BooksAPI from './BooksAPI'
 import BookShelf from './BookShelf';
 import Search from './Search';
+import Header from './Header';
 import './App.css'
 
 class BooksApp extends React.Component {
@@ -48,10 +49,29 @@ class BooksApp extends React.Component {
             books={books} 
             onBookShelfNavigate={this.onBookShelfNavigate} />
         ) : (
-          <BookShelf
+          <div>
+            <Header />
+            <BookShelf
+              books={books}
+              title='Currently Reading'
+              shelf='currentlyReading'
+              updateCurrentlyReading={this.updateCurrentlyReading}
+              onSearchNavigate={this.onSearchNavigate} />
+
+            <BookShelf
             books={books}
+            title='Want to Read'
+            shelf='wantToRead'
             updateCurrentlyReading={this.updateCurrentlyReading}
             onSearchNavigate={this.onSearchNavigate} />
+
+            <BookShelf
+            books={books}
+            title='Read'
+            shelf='read'
+            updateCurrentlyReading={this.updateCurrentlyReading}
+            onSearchNavigate={this.onSearchNavigate} />
+          </div>
         )}
       </div>
     )
