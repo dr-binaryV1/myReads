@@ -1,7 +1,11 @@
 import React from 'react';
 
 function Book(props) {
-  const { book } = props;
+  const { book, updateBooks } = props;
+
+  function optionChanged(e) {
+    updateBooks(book, e.target.options[e.target.selectedIndex].value);
+  }
 
   return (
     <li key={book.id}>
@@ -9,7 +13,7 @@ function Book(props) {
         <div className="book-top">
           <div className="book-cover" style={{ width: 128, height: 193, backgroundImage: `url(${book.imageLinks.thumbnail})` }}></div>
           <div className="book-shelf-changer">
-            <select>
+            <select defaultValue={book.shelf} onChange={optionChanged}>
               <option value="none" disabled>Move to...</option>
               <option value="currentlyReading">Currently Reading</option>
               <option value="wantToRead">Want to Read</option>

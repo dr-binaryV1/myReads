@@ -14,12 +14,12 @@ class Search extends Component {
     this.setState({ query: e.target.value });
 
     if(query) {
-      BooksAPI.search(query, 20).then((books) => this.setState({ queriedBooks: books }));
+      BooksAPI.search(query, 30).then((books) => this.setState({ queriedBooks: books }));
     }
   }
 
   render() {
-    const { onBookShelfNavigate } = this.props;
+    const { onBookShelfNavigate, updateBooks } = this.props;
     const { query, queriedBooks } = this.state;
 
     return (
@@ -45,7 +45,7 @@ class Search extends Component {
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {queriedBooks.length > 0 ? queriedBooks.map((book) => { return <Book key={book.id} book={book} />  }) : ''}
+            {queriedBooks.length > 0 ? queriedBooks.map((book) => { return <Book key={book.id} book={book} updateBooks={updateBooks} />  }) : ''}
           </ol>
         </div>
       </div>
