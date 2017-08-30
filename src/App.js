@@ -7,8 +7,10 @@ import './App.css'
 
 class BooksApp extends React.Component {
   componentDidMount() {
+    const bookShelf = ['currentlyReading', 'wantToRead', 'read'];
+
     BooksAPI.getAll().then(books => {
-      this.setState({ books });
+      bookShelf.map(shelf => this.filterBookShelf(books, shelf));
     });
   }
 
@@ -21,9 +23,8 @@ class BooksApp extends React.Component {
      */
     showSearchPage: true,
     currentlyReading: [],
-    read: [],
     wantToRead: [],
-    books: []
+    read: []
   }
 
   onSearchNavigate = () => {
@@ -33,42 +34,54 @@ class BooksApp extends React.Component {
   onBookShelfNavigate = () => {
     this.setState({ showSearchPage: false });
   }
+  
+  filterBookShelf(books, shelf) {
+    const filteredBooks = books
+      .filter((book) => {return shelf === book.shelf})
+      .map((book) => { return book });
 
-  updateCurrentlyReading = (arr) => {
-    this.setState({ currentlyReading: arr })
+    this.setState({ [shelf] : filteredBooks });
+  }
+
+  updateBooks = (book, shelf) => {
+    BooksAPI.update(book, shelf).then((books) => {
+      console.log(books);
+       Object.keys(books).map(key => this.filterBookShelf(books[key], key));
+    });
   }
 
   render() {
-    const { books } = this.state;
+    const { currentlyReading, wantToRead, read } = this.state;
 
     return (
       <div className="app">
         {this.state.showSearchPage ? (
           <Search
+            updateBooks={this.updateBooks}
             onBookShelfNavigate={this.onBookShelfNavigate} />
         ) : (
           <div>
             <Header />
             <BookShelf
-              books={books}
+              books={currentlyReading}
               title='Currently Reading'
               shelf='currentlyReading'
-              updateCurrentlyReading={this.updateCurrentlyReading}
+              updateBooks={this.updateBooks}
               onSearchNavigate={this.onSearchNavigate} />
 
             <BookShelf
-            books={books}
-            title='Want to Read'
-            shelf='wantToRead'
-            updateCurrentlyReading={this.updateCurrentlyReading}
-            onSearchNavigate={this.onSearchNavigate} />
+              books={wantToRead}
+              title='Want to Read'
+              shelf='wantToRead'
+              updateBooks={this.updateBooks}
+              onSearchNavigate={this.onSearchNavigate} />
 
             <BookShelf
-            books={books}
-            title='Read'
-            shelf='read'
-            updateCurrentlyReading={this.updateCurrentlyReading}
-            onSearchNavigate={this.onSearchNavigate} />
+              books={read}
+              title='Read'
+              shelf='read'
+              updateBooks={this.updateBooks}
+              onSearchNavigate={this.onSearchNavigate} />
           </div>
         )}
       </div>
