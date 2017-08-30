@@ -45,7 +45,6 @@ class BooksApp extends React.Component {
       <div className="app">
         {this.state.showSearchPage ? (
           <Search
-            books={books} 
             onBookShelfNavigate={this.onBookShelfNavigate} />
         ) : (
           <div>
