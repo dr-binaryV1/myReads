@@ -20,6 +20,8 @@ class BooksApp extends Component {
     read: []
   }
   
+  // Iterate over each book and place the books in the corresponding shelf
+  // thats matched based on their shelf property
   filterBookShelf(books, shelf) {
     const filteredBooks = books
       .filter((book) => {return shelf === book.shelf})
