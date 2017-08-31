@@ -18,6 +18,7 @@ class Search extends Component {
     }
   }
 
+  //Check BookShelf to crosscheck whether a book retrieved from search is already on the shelf
   checkShelf(book) {
     const { 
       currentlyReadingShelf,
@@ -25,27 +26,25 @@ class Search extends Component {
       readShelf
     } = this.props;
 
-    var filteredBook = currentlyReadingShelf.filter((b) => {return b.id === book.id});
+    var shelf = currentlyReadingShelf.filter((b) => {return b.id === book.id});
     
-    if(filteredBook.length < 1) {
-      filteredBook = wantToReadShelf.filter((b) => {return b.id === book.id});
+    if(shelf.length < 1) {
+      shelf = wantToReadShelf.filter((b) => {return b.id === book.id});
     }
 
-    if(filteredBook.length < 1) {
-      filteredBook = readShelf.filter((b) => {return b.id === book.id});
+    if(shelf.length < 1) {
+      shelf = readShelf.filter((b) => {return b.id === book.id});
     }
 
-    filteredBook.length > 0 ? filteredBook.map((filtered_book) => {return book = filtered_book}) : book;
-    return book;
+    // If the shelf array is greater than 0 then map over the element and return the book that in the shelf else return undefined
+    shelf.length > 0 ? shelf.map((book) => {return shelf = book.shelf}) : shelf = undefined;
+    return shelf;
   }
 
   render() {
     const { 
       updateBooks,
-      history,
-      currentlyReadingShelf,
-      wantToReadShelf,
-      readShelf
+      history
     } = this.props;
 
     const { query, queriedBooks } = this.state;
@@ -66,9 +65,9 @@ class Search extends Component {
           <ol className="books-grid">
             {queriedBooks.length > 0 ? 
               queriedBooks.map((book) => {
-                book = this.checkShelf(book);
+                const shelf = this.checkShelf(book);
                 return (
-                  <Book key={book.id} book={book} updateBooks={updateBooks} />  
+                  <Book key={book.id} shelf={shelf} book={book} updateBooks={updateBooks} />  
                   )})
               : 
               ''
