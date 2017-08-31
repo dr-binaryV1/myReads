@@ -6,6 +6,6 @@ import './index.css'
 
 ReactDOM.render(
   <BrowserRouter>
-    <App />
+    <App bookShelf={['currentlyReading', 'wantToRead', 'read']} />
   </BrowserRouter>
 , document.getElementById('root'))

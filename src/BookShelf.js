@@ -15,7 +15,7 @@ function BookShelf(props) {
                 {books.filter((book) => {
                   return book.shelf === props.shelf
                 }).map((book) => {
-                  return <Book updateBooks={updateBooks} key={book.id} book={book} />
+                  return <Book shelf={book.shelf} updateBooks={updateBooks} key={book.id} book={book} />
                 })}
               </ol>
             </div>
