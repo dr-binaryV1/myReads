@@ -18,34 +18,61 @@ class Search extends Component {
     }
   }
 
+  checkShelf(book) {
+    const { 
+      currentlyReadingShelf,
+      wantToReadShelf,
+      readShelf
+    } = this.props;
+
+    var filteredBook = currentlyReadingShelf.filter((b) => {return b.id === book.id});
+    
+    if(filteredBook.length < 1) {
+      filteredBook = wantToReadShelf.filter((b) => {return b.id === book.id});
+    }
+
+    if(filteredBook.length < 1) {
+      filteredBook = readShelf.filter((b) => {return b.id === book.id});
+    }
+
+    filteredBook.length > 0 ? filteredBook.map((filtered_book) => {return book = filtered_book}) : book;
+    return book;
+  }
+
   render() {
-    const { onBookShelfNavigate, updateBooks } = this.props;
+    const { 
+      updateBooks,
+      history,
+      currentlyReadingShelf,
+      wantToReadShelf,
+      readShelf
+    } = this.props;
+
     const { query, queriedBooks } = this.state;
 
     return (
       <div className="search-books">
         <div className="search-books-bar">
-          <a className="close-search" onClick={() => onBookShelfNavigate()}>Close</a>
+          <a className="close-search" onClick={() => history.push('/')}>Close</a>
           <div className="search-books-input-wrapper">
-            {/* 
-              NOTES: The search from BooksAPI is limited to a particular set of search terms.
-              You can find these search terms here:
-              https://github.com/udacity/reactnd-project-myreads-starter/blob/master/SEARCH_TERMS.md
-              
-              However, remember that the BooksAPI.search method DOES search by title or author. So, don't worry if
-              you don't find a specific author or title. Every search is limited by search terms.
-            */}
             <input 
               onChange={this.onInputChange} 
               type="text" 
               value={query}
               placeholder="Search by title or author"/>
-            
           </div>
         </div>
         <div className="search-books-results">
           <ol className="books-grid">
-            {queriedBooks.length > 0 ? queriedBooks.map((book) => { return <Book key={book.id} book={book} updateBooks={updateBooks} />  }) : ''}
+            {queriedBooks.length > 0 ? 
+              queriedBooks.map((book) => {
+                book = this.checkShelf(book);
+                return (
+                  <Book key={book.id} book={book} updateBooks={updateBooks} />  
+                  )})
+              : 
+              ''
+            }
           </ol>
         </div>
       </div>
