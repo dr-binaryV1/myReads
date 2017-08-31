@@ -2,7 +2,7 @@ import React from 'react';
 import Book from './Book';
 
 function BookShelf(props) {
-  const { books, updateBooks } = props;
+  const { books, updateBooks, history } = props;
 
   return (
     <div className="list-books">
@@ -23,7 +23,7 @@ function BookShelf(props) {
         </div>
       </div>
       <div className="open-search">
-        <a onClick={() => props.onSearchNavigate()}>Add a book</a>
+        <a onClick={() => history.push('/search')}>Add a book</a>
       </div>
     </div>
   )
