@@ -10,12 +10,8 @@ class Search extends Component {
   }
 
   onInputChange = (e) => {
-    const { query } = this.state;
     this.setState({ query: e.target.value });
-
-    if(query) {
-      BooksAPI.search(query, 30).then((books) => this.setState({ queriedBooks: books }));
-    }
+    BooksAPI.search(e.target.value, 30).then((books) => { books && books.length > 0 ? this.setState({ queriedBooks: books }) : this.setState({ queriedBooks: [] })});
   }
 
   //Check BookShelf to crosscheck whether a book retrieved from search is already on the shelf
