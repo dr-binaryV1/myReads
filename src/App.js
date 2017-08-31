@@ -1,4 +1,6 @@
 import React from 'react'
+import { Route,  } from 'react-router-dom';
+
 import * as BooksAPI from './BooksAPI'
 import BookShelf from './BookShelf';
 import Search from './Search';
@@ -15,24 +17,9 @@ class BooksApp extends React.Component {
   }
 
   state = {
-    /**
-     * TODO: Instead of using this state variable to keep track of which page
-     * we're on, use the URL in the browser's address bar. This will ensure that
-     * users can use the browser's back and forward buttons to navigate between
-     * pages, as well as provide a good URL they can bookmark and share.
-     */
-    showSearchPage: true,
     currentlyReading: [],
     wantToRead: [],
     read: []
-  }
-
-  onSearchNavigate = () => {
-    this.setState({ showSearchPage: true });
-  }
-
-  onBookShelfNavigate = () => {
-    this.setState({ showSearchPage: false });
   }
   
   filterBookShelf(books, shelf) {
@@ -44,9 +31,12 @@ class BooksApp extends React.Component {
   }
 
   updateBooks = (book, shelf) => {
-    BooksAPI.update(book, shelf).then((books) => {
-      console.log(books);
-       Object.keys(books).map(key => this.filterBookShelf(books[key], key));
+    const bookShelf = ['currentlyReading', 'wantToRead', 'read'];
+
+    BooksAPI.update(book, shelf).then(() => {
+      BooksAPI.getAll().then((books) => {
+        bookShelf.map(shelf => this.filterBookShelf(books, shelf));
+      }); 
     });
   }
 
@@ -55,35 +45,46 @@ class BooksApp extends React.Component {
 
     return (
       <div className="app">
-        {this.state.showSearchPage ? (
-          <Search
-            updateBooks={this.updateBooks}
-            onBookShelfNavigate={this.onBookShelfNavigate} />
-        ) : (
-          <div>
-            <Header />
-            <BookShelf
-              books={currentlyReading}
-              title='Currently Reading'
-              shelf='currentlyReading'
-              updateBooks={this.updateBooks}
-              onSearchNavigate={this.onSearchNavigate} />
+        <Route path='/search' render={({ history }) => {
+          return (
+            <Search
+              history={history}
+              currentlyReadingShelf={currentlyReading}
+              wantToReadShelf={wantToRead}
+              readShelf={read}
+              updateBooks={this.updateBooks} />
+          )
+        }} />
+        <Route exact path='/' render={({ history }) => {
+          return (
+            <div>
+              <Header />
+              <BookShelf
+                books={currentlyReading}
+                title='Currently Reading'
+                shelf='currentlyReading'
+                history={history}
+                updateBooks={this.updateBooks}
+                onSearchNavigate={this.onSearchNavigate} />
 
-            <BookShelf
-              books={wantToRead}
-              title='Want to Read'
-              shelf='wantToRead'
-              updateBooks={this.updateBooks}
-              onSearchNavigate={this.onSearchNavigate} />
+              <BookShelf
+                books={wantToRead}
+                title='Want to Read'
+                shelf='wantToRead'
+                history={history}
+                updateBooks={this.updateBooks}
+                onSearchNavigate={this.onSearchNavigate} />
 
-            <BookShelf
-              books={read}
-              title='Read'
-              shelf='read'
-              updateBooks={this.updateBooks}
-              onSearchNavigate={this.onSearchNavigate} />
-          </div>
-        )}
+              <BookShelf
+                books={read}
+                title='Read'
+                shelf='read'
+                history={history}
+                updateBooks={this.updateBooks}
+                onSearchNavigate={this.onSearchNavigate} />
+            </div>
+          )
+        }} />
       </div>
     )
   }
