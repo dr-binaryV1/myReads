@@ -1,5 +1,5 @@
-import React from 'react'
-import { Route,  } from 'react-router-dom';
+import React, { Component } from 'react'
+import { Route } from 'react-router-dom';
 
 import * as BooksAPI from './BooksAPI'
 import BookShelf from './BookShelf';
@@ -7,12 +7,10 @@ import Search from './Search';
 import Header from './Header';
 import './App.css'
 
-class BooksApp extends React.Component {
+class BooksApp extends Component {
   componentDidMount() {
-    const bookShelf = ['currentlyReading', 'wantToRead', 'read'];
-
     BooksAPI.getAll().then(books => {
-      bookShelf.map(shelf => this.filterBookShelf(books, shelf));
+      this.props.bookShelf.map(shelf => this.filterBookShelf(books, shelf));
     });
   }
 
@@ -31,11 +29,9 @@ class BooksApp extends React.Component {
   }
 
   updateBooks = (book, shelf) => {
-    const bookShelf = ['currentlyReading', 'wantToRead', 'read'];
-
     BooksAPI.update(book, shelf).then(() => {
       BooksAPI.getAll().then((books) => {
-        bookShelf.map(shelf => this.filterBookShelf(books, shelf));
+        this.props.bookShelf.map(shelf => this.filterBookShelf(books, shelf));
       }); 
     });
   }
